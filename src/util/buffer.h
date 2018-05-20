@@ -22,8 +22,81 @@ Revision History:
 #include<string.h>
 #include "util/memory_manager.h"
 
+template<bool CHECK>
+class checked_int64;
+namespace subpaving { class power; }
+namespace polynomial { class power; }
+class mpz;
+class parameter;
+class symbol;
+class rational;
+class expr_offset;
+class aig_lit;
+class old_interval;
+namespace nlsat { class interval; }
+namespace sat { class literal; }
+namespace smt {
+    class literal;
+    class model_value_dependency;
+    template<typename Ext>
+    struct theory_arith__linear_monomial; // refactored smt::theory_arith<Ext>::linear_monomial, so we can forward declare it
+    template<typename Ext>
+    struct theory_arith__row_entry; // refactored smt::theory_arith<Ext>::row_entry, so we can forward declare it
+    template<typename Ext>
+    struct theory_arith__col_entry; // refactored smt::theory_arith<Ext>::col_entry, so we can forward declare it
+}
+#include <utility>
+#include <type_traits>
+template<typename T, bool destro, unsigned size> struct buffer_specialized : std::false_type { };
+
+template<> struct buffer_specialized<bool, false, 16> : std::true_type { };
+template<> struct buffer_specialized<bool, true, 16> : std::true_type { };
+template<> struct buffer_specialized<char, false, 16> : std::true_type { };
+template<> struct buffer_specialized<char, true, 16> : std::true_type { };
+template<> struct buffer_specialized<char, false, 1024> : std::true_type { };
+template<> struct buffer_specialized<int, false, 16> : std::true_type { };
+template<> struct buffer_specialized<int, false, 32> : std::true_type { };
+template<> struct buffer_specialized<unsigned, true, 16> : std::true_type { };
+template<> struct buffer_specialized<unsigned, false, 16> : std::true_type { };
+template<> struct buffer_specialized<unsigned, false, 32> : std::true_type { };
+template<> struct buffer_specialized<unsigned, false, 128> : std::true_type { };
+template<> struct buffer_specialized<unsigned, false, 1024> : std::true_type { };
+template<typename T> struct buffer_specialized<T*, false, 1> : std::true_type { };
+template<typename T> struct buffer_specialized<T*, false, 8> : std::true_type { };
+template<typename T> struct buffer_specialized<T*, false, 16> : std::true_type { };
+template<typename T> struct buffer_specialized<T*, false, 32> : std::true_type { };
+template<typename T> struct buffer_specialized<T*, false, 128> : std::true_type { };
+template<typename T> struct buffer_specialized<T*, false, 256> : std::true_type { };
+template<typename T> struct buffer_specialized<T*, false, 1024> : std::true_type { };
+template<typename T> struct buffer_specialized<std::pair<checked_int64<true>, T*>, true, 2> : std::true_type { };
+template<typename T> struct buffer_specialized<std::pair<rational, T*>, false, 16> : std::true_type { };
+template<typename T> struct buffer_specialized<std::pair<T*, bool>, false, 64> : std::true_type { };
+template<typename T> struct buffer_specialized<std::pair<T*, unsigned>, true, 16> : std::true_type { };
+template<typename T> struct buffer_specialized<std::pair<T*, unsigned>, false, 16> : std::true_type { };
+template<> struct buffer_specialized<mpz, false, 16> : std::true_type { };
+template<> struct buffer_specialized<mpz, false, 128> : std::true_type { };
+template<> struct buffer_specialized<subpaving::power, false, 16> : std::true_type { };
+template<> struct buffer_specialized<polynomial::power, false, 16> : std::true_type { };
+template<> struct buffer_specialized<polynomial::power, false, 32> : std::true_type { };
+template<> struct buffer_specialized<parameter, true, 16> : std::true_type { };
+template<> struct buffer_specialized<symbol, false, 16> : std::true_type { };
+template<> struct buffer_specialized<symbol, true, 16> : std::true_type { };
+template<> struct buffer_specialized<expr_offset, true, 16> : std::true_type { };
+template<> struct buffer_specialized<rational, true, 16> : std::true_type { };
+template<> struct buffer_specialized<aig_lit, false, 16> : std::true_type { };
+template<> struct buffer_specialized<nlsat::interval, false, 128> : std::true_type { };
+template<> struct buffer_specialized<sat::literal, false, 16> : std::true_type { };
+template<> struct buffer_specialized<smt::literal, false, 16> : std::true_type { };
+template<> struct buffer_specialized<smt::model_value_dependency, true, 16> : std::true_type { };
+template<> struct buffer_specialized<old_interval, true, 16> : std::true_type { };
+template<typename Ext> struct buffer_specialized<smt::theory_arith__linear_monomial<Ext>, true, 16> : std::true_type { };
+template<typename Ext> struct buffer_specialized<smt::theory_arith__row_entry<Ext>, true, 16> : std::true_type { };
+template<typename Ext> struct buffer_specialized<smt::theory_arith__col_entry<Ext>, true, 16> : std::true_type { };
+
 template<typename T, bool CallDestructors=true, unsigned INITIAL_SIZE=16>
 class buffer {
+    static_assert(buffer_specialized<T, CallDestructors, INITIAL_SIZE>::value);
+
 protected:
     T *      m_buffer;
     unsigned m_pos;

@@ -82,6 +82,43 @@ namespace smt {
     */
 
     template<typename Ext>
+    struct theory_arith__linear_monomial {
+        typedef typename Ext::numeral     numeral;
+        numeral     m_coeff;
+        theory_var  m_var;
+        theory_arith__linear_monomial():m_var(null_theory_var) {}
+        theory_arith__linear_monomial(numeral const & c, theory_var v):m_coeff(c), m_var(v) {}
+    };
+    template<typename Ext>
+    struct theory_arith__row_entry {
+        typedef typename Ext::numeral     numeral;
+        numeral     m_coeff;
+        theory_var  m_var;
+        union {
+            int       m_col_idx;
+            int       m_next_free_row_entry_idx;
+        };
+
+        theory_arith__row_entry():m_var(0), m_col_idx(0) {}
+        theory_arith__row_entry(numeral const & c, theory_var v): m_coeff(c), m_var(v), m_col_idx(0) {}
+        bool is_dead() const { return m_var == null_theory_var; }
+    };
+    template<typename Ext>
+    struct theory_arith__col_entry {
+        typedef typename Ext::numeral     numeral;
+        static const int    dead_row_id = -1;
+        int m_row_id;
+        union {
+            int m_row_idx;
+            int m_next_free_row_entry_idx;
+        };
+
+        theory_arith__col_entry(int r, int i): m_row_id(r), m_row_idx(i) {}
+        theory_arith__col_entry(): m_row_id(0), m_row_idx(0) {}
+        bool is_dead() const { return m_row_id == dead_row_id; }
+    };
+
+    template<typename Ext>
     class theory_arith : public theory, public theory_opt, private Ext {
     public:
         typedef typename Ext::numeral     numeral;
@@ -94,12 +131,7 @@ namespace smt {
         bool proofs_enabled() const { return get_manager().proofs_enabled(); }
         bool coeffs_enabled() const { return proofs_enabled() || m_bound_watch != null_bool_var; }
         
-        struct linear_monomial {
-            numeral     m_coeff;
-            theory_var  m_var;
-            linear_monomial():m_var(null_theory_var) {}
-            linear_monomial(numeral const & c, theory_var v):m_coeff(c), m_var(v) {}
-        };
+        using linear_monomial = theory_arith__linear_monomial<Ext>;
 
         /**
            \brief A row_entry is:  m_var*m_coeff
@@ -107,36 +139,15 @@ namespace smt {
            m_col_idx points to the place in the
            column where the variable occurs.
         */
-        struct row_entry {
-            numeral     m_coeff;
-            theory_var  m_var;
-            union {
-                int       m_col_idx;
-                int       m_next_free_row_entry_idx;
-            };
-            
-            row_entry():m_var(0), m_col_idx(0) {}
-            row_entry(numeral const & c, theory_var v): m_coeff(c), m_var(v), m_col_idx(0) {}
-            bool is_dead() const { return m_var == null_theory_var; }
-        };
+        using row_entry = theory_arith__row_entry<Ext>;
 
         /**
            \brief A column entry points to the row and the row_entry within the row 
            that has a non-zero coefficient on the variable associated
            with the column entry.
         */
-        struct col_entry {
-            int m_row_id;
-            union {
-                int m_row_idx;
-                int m_next_free_row_entry_idx;
-            };
-            
-            col_entry(int r, int i): m_row_id(r), m_row_idx(i) {}
-            col_entry(): m_row_id(0), m_row_idx(0) {}
-            bool is_dead() const { return m_row_id == dead_row_id; }
-        };
-     
+        using col_entry = theory_arith__col_entry<Ext>;
+
         struct column;
 
         /**
