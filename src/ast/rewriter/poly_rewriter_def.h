@@ -359,7 +359,7 @@ br_status poly_rewriter<Config>::mk_nflat_mul_core(unsigned num_args, expr * con
         if (sum.size() > m_som_blowup * orig_size) {
             return BR_FAILED;
         }
-        m_args.reset();
+        m_args.clear();
         for (unsigned i = 0; i < num_args; i++) {
             expr * const * v = sums[i];
             expr * arg       = v[it[i]];
@@ -470,7 +470,7 @@ void poly_rewriter<Config>::hoist_cmul(expr_ref_buffer & args) {
             expr * mon_prime = args[i+1];
             if (is_mul(mon_prime, c_prime, pp_prime) && c == c_prime) {
                 // found target
-                pps.reset();
+                pps.clear();
                 pps.push_back(pp);
                 pps.push_back(pp_prime);
                 i += 2;
@@ -923,7 +923,7 @@ bool poly_rewriter<Config>::hoist_multiplication(expr_ref& som) {
     bool change = false;
     for (unsigned k = 0; k < adds.size(); ++k) {
         expr* e = adds[k];
-        muls.reset();
+        muls.clear();
         TO_BUFFER(is_mul, muls, e);
         for (unsigned i = 0; i < muls.size(); ++i) {
             e = muls[i];
