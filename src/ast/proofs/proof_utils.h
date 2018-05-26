@@ -152,7 +152,7 @@ public:
             SASSERT(!todo.empty() || pr == p);
             bool dirty = false;
             unsigned todo_sz = todo.size();
-            args.reset();
+            args.clear();
             for (unsigned i = 0, sz = p->get_num_args(); i < sz; ++i) {
                 expr* arg = p->get_arg(i);
                 if (arg == m_aux.get()) {
@@ -183,7 +183,7 @@ public:
             }
             if (todo_sz < todo.size()) {
                 // -- process parents
-                args.reset();
+                args.clear();
                 continue;
             }
 

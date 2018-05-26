@@ -403,7 +403,7 @@ namespace smt {
                 continue;
             }
             TRACE("special_relations", tout << a.v1() << " !<= " << a.v2() << "\n";);
-            target.reset();
+            target.clear();
             theory_var w;
             // v1 !<= v2 is asserted
             target.insert(a.v1());
@@ -425,7 +425,7 @@ namespace smt {
                 //   v1 <= w & v2 <= w & v1 !<= v2 -> v2 <= v1
                 //
                 unsigned timestamp = r.m_graph.get_timestamp();
-                r.m_explanation.reset();
+                r.m_explanation.clear();
                 r.m_graph.find_shortest_reachable_path(a.v1(), w, timestamp, r);
                 r.m_graph.find_shortest_reachable_path(a.v2(), w, timestamp, r);
                 TRACE("special_relations", tout << "added edge\n";);
@@ -436,13 +436,13 @@ namespace smt {
                     return l_false;
                 }
             }
-            target.reset();
-            visited.reset();
+            target.clear();
+            visited.clear();
             target.insert(a.v2());
             if (r.m_graph.reachable(a.v1(), target, visited, w)) {
                 // we have v1 <= v2
                 unsigned timestamp = r.m_graph.get_timestamp();
-                r.m_explanation.reset();
+                r.m_explanation.clear();
                 r.m_graph.find_shortest_reachable_path(a.v1(), w, timestamp, r);
                 r.m_explanation.push_back(a.explanation());
                 set_conflict(r);                
@@ -464,7 +464,7 @@ namespace smt {
     }
 
     void theory_special_relations::set_neg_cycle_conflict(relation& r) {
-        r.m_explanation.reset();
+        r.m_explanation.clear();
         r.m_graph.traverse_neg_cycle2(false, r);
         set_conflict(r);
     }
@@ -535,7 +535,7 @@ namespace smt {
                 if (x->get_root() != y->get_root()) {
                     new_eq = true;
                     unsigned timestamp = r.m_graph.get_timestamp();
-                    r.m_explanation.reset();
+                    r.m_explanation.clear();
                     r.m_graph.find_shortest_zero_edge_path(i, j, timestamp, r);
                     r.m_graph.find_shortest_zero_edge_path(j, i, timestamp, r);
                     literal_vector const& lits = r.m_explanation;
@@ -594,7 +594,7 @@ namespace smt {
             if (!a.phase() && r.m_uf.find(a.v1()) == r.m_uf.find(a.v2())) {
                 // v1 !-> v2
                 // find v1 -> v3 -> v4 -> v2 path
-                r.m_explanation.reset();
+                r.m_explanation.clear();
                 unsigned timestamp = r.m_graph.get_timestamp();
                 bool found_path = r.m_graph.find_shortest_reachable_path(a.v1(), a.v2(), timestamp, r);
                 if (found_path) {

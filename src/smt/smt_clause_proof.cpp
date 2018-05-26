@@ -50,7 +50,7 @@ namespace smt {
     void clause_proof::add(unsigned n, literal const* lits, clause_kind k, justification* j) {
         if (ctx.get_fparams().m_clause_proof) {  
             proof* pr = justification2proof(j);
-            m_lits.reset();
+            m_lits.clear();
             for (unsigned i = 0; i < n; ++i) {
                 literal lit = lits[i];
                 m_lits.push_back(ctx.literal2expr(lit));
@@ -62,7 +62,7 @@ namespace smt {
 
     void clause_proof::shrink(clause& c, unsigned new_size) {
         if (ctx.get_fparams().m_clause_proof) {            
-            m_lits.reset();
+            m_lits.clear();
             for (unsigned i = 0; i < new_size; ++i) {
                 m_lits.push_back(ctx.literal2expr(c[i]));
             }
@@ -76,7 +76,7 @@ namespace smt {
 
     void clause_proof::add(literal lit, clause_kind k, justification* j) {
         if (ctx.get_fparams().m_clause_proof) {
-            m_lits.reset();
+            m_lits.clear();
             m_lits.push_back(ctx.literal2expr(lit));
             proof* pr = justification2proof(j);
             update(kind2st(k), m_lits, pr);
@@ -85,7 +85,7 @@ namespace smt {
 
     void clause_proof::add(literal lit1, literal lit2, clause_kind k, justification* j) {
         if (ctx.get_fparams().m_clause_proof) {
-            m_lits.reset();
+            m_lits.clear();
             m_lits.push_back(ctx.literal2expr(lit1));
             m_lits.push_back(ctx.literal2expr(lit2));
             proof* pr = justification2proof(j);
@@ -106,7 +106,7 @@ namespace smt {
 
     void clause_proof::update(clause& c, status st, proof* p) {
         if (ctx.get_fparams().m_clause_proof) {
-            m_lits.reset();
+            m_lits.clear();
             for (literal lit : c) {
                 m_lits.push_back(ctx.literal2expr(lit));
             }

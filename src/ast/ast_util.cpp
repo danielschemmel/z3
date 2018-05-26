@@ -292,7 +292,7 @@ void flatten_and(expr_ref_vector& result) {
         else if (m.is_false(result.get(i)) ||
                  (m.is_not(result.get(i), e1) &&
                   m.is_true(e1))) {
-            result.reset();
+            result.clear();
             result.push_back(m.mk_false());
             return;
         }
@@ -349,7 +349,7 @@ void flatten_or(expr_ref_vector& result) {
         else if (m.is_true(result.get(i)) ||
                  (m.is_not(result.get(i), e1) &&
                   m.is_false(e1))) {
-            result.reset();
+            result.clear();
             result.push_back(m.mk_true());
             return;
         }

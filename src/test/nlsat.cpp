@@ -428,7 +428,7 @@ static void tst7() {
     }
     std::cout << "\n";
 
-    litsv.reset();
+    litsv.clear();
     litsv.append(2, lits.c_ptr());
     res = s.check(litsv);
     ENSURE(res == l_true);
@@ -551,7 +551,7 @@ static void tst9() {
 
     TEST_ON_OFF();
 
-    lits.reset();
+    lits.clear();
     polynomial_ref u(pm);
     u = pm.mk_polynomial(his[1]);
     for (int i = 0; i < num_lo; ++i) {
@@ -569,7 +569,7 @@ static void tst9() {
 
     TEST_ON_OFF();
 
-    lits.reset();
+    lits.clear();
     u = pm.mk_polynomial(los[1]);
     for (int i = 0; i < num_lo; ++i) {
         polynomial_ref y(pm);

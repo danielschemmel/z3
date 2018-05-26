@@ -529,7 +529,7 @@ void array_rewriter::mk_eq(expr* e, expr* lhs, expr* rhs, expr_ref_vector& fmls)
     expr_ref a(m()), v(m());
     expr_ref_vector args0(m()), args(m());
     while (m_util.is_store_ext(e, a, args0, v)) {                                        
-        args.reset();
+        args.clear();
         args.push_back(lhs);
         args.append(args0);
         mk_select(args.size(), args.c_ptr(), tmp1);                     
@@ -592,7 +592,7 @@ bool array_rewriter::add_store(expr_ref_vector& args, unsigned num_idxs, expr* e
 
     expr* e1, *e2;
     ptr_vector<expr> eqs;    
-    args.reset();
+    args.clear();
     args.resize(num_idxs + 1, nullptr);
     bool is_not = m().is_bool(store_val) && m().is_not(e, e);
 

@@ -243,7 +243,7 @@ struct goal2sat::imp {
             else {
                 mk_clause(m_result_stack.size(), m_result_stack.c_ptr());
             }
-            m_result_stack.reset();
+            m_result_stack.clear();
         }
         else {
             SASSERT(num <= m_result_stack.size());
@@ -282,7 +282,7 @@ struct goal2sat::imp {
                     mk_clause(m_result_stack[i]);
                 }
             }
-            m_result_stack.reset();
+            m_result_stack.clear();
         }
         else {
             SASSERT(num <= m_result_stack.size());
@@ -326,7 +326,7 @@ struct goal2sat::imp {
                 mk_clause(~c, t);
                 mk_clause(c, e);
             }
-            m_result_stack.reset();
+            m_result_stack.clear();
         }
         else {
             sat::bool_var k = m_solver.add_var(false);
@@ -363,7 +363,7 @@ struct goal2sat::imp {
                 mk_clause(l1, ~l2);
                 mk_clause(~l1, l2);
             }
-            m_result_stack.reset();
+            m_result_stack.clear();
         }
         else {
             sat::bool_var k = m_solver.add_var(false);
@@ -401,7 +401,7 @@ struct goal2sat::imp {
         m_ext->add_xr(lits);
         sat::literal lit(v, sign);
         if (root) {            
-            m_result_stack.reset();
+            m_result_stack.clear();
             mk_clause(lit);
         }
         else {
@@ -445,7 +445,7 @@ struct goal2sat::imp {
 
     void push_result(bool root, sat::literal lit, unsigned num_args) {
         if (root) {
-            m_result_stack.reset();
+            m_result_stack.clear();
             mk_clause(lit);                
         }
         else {
@@ -460,7 +460,7 @@ struct goal2sat::imp {
         vector<wliteral> wlits;
         convert_pb_args(t, wlits);
         if (root && m_solver.num_user_scopes() == 0) {
-            m_result_stack.reset();
+            m_result_stack.clear();
             unsigned k1 = k.get_unsigned();
             if (sign) {
                 k1 = 1 - k1;
@@ -491,7 +491,7 @@ struct goal2sat::imp {
         }
         check_unsigned(k);
         if (root && m_solver.num_user_scopes() == 0) {
-            m_result_stack.reset();
+            m_result_stack.clear();
             unsigned k1 = k.get_unsigned();
             if (sign) {
                 k1 = 1 - k1;
@@ -529,7 +529,7 @@ struct goal2sat::imp {
         check_unsigned(k);
         m_ext->add_pb_ge(v2, wlits, k.get_unsigned());
         if (base_assert) {
-            m_result_stack.reset();
+            m_result_stack.clear();
         }
         else {
             sat::literal l1(v1, false), l2(v2, false);
@@ -550,7 +550,7 @@ struct goal2sat::imp {
         convert_pb_args(t->get_num_args(), lits);
         unsigned k2 = k.get_unsigned();
         if (root && m_solver.num_user_scopes() == 0) {
-            m_result_stack.reset();
+            m_result_stack.clear();
             if (sign) {
                 for (sat::literal& l : lits) l.neg();
                 k2 = lits.size() + 1 - k2;
@@ -577,7 +577,7 @@ struct goal2sat::imp {
         }
         unsigned k2 = lits.size() - k.get_unsigned();
         if (root && m_solver.num_user_scopes() == 0) {
-            m_result_stack.reset();
+            m_result_stack.clear();
             if (sign) {
                 for (sat::literal& l : lits) l.neg();
                 k2 = lits.size() + 1 - k2;
@@ -608,7 +608,7 @@ struct goal2sat::imp {
 
 
         if (root && !sign) {
-            m_result_stack.reset();
+            m_result_stack.clear();
         }
         else {
             sat::literal l1(v1, false), l2(v2, false);
@@ -816,8 +816,8 @@ struct goal2sat::imp {
             f = g.form(idx);
             // Add assumptions.
             if (g.dep(idx)) {
-                deps.reset();
-                fmls.reset();
+                deps.clear();
+                fmls.clear();
                 m.linearize(g.dep(idx), deps);
                 fmls.push_back(f);
                 for (expr * d : deps) {
@@ -952,8 +952,8 @@ void sat2goal::mc::flush_gmc() {
                 def = m.mk_not(def);
             }
             m_gmc->add(lit2expr(lit0), def);
-            clause.reset();
-            tail.reset();
+            clause.clear();
+            tail.clear();
         }
         // short circuit for equivalences:
         else if (clause.empty() && tail.empty() && 

@@ -1002,7 +1002,7 @@ bool poly_rewriter<Config>::hoist_ite(expr_ref& e) {
             shared.reset();
             numeral g(0);
             if (hoist_ite(a, shared, g) && (is_nontrivial_gcd(g) || !shared.empty())) {
-                bs.reset();
+                bs.clear();
                 if (!shared.empty()) {
                     g = numeral(1);
                 }

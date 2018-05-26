@@ -88,7 +88,7 @@ namespace smt2 {
     scanner::token scanner::read_quoted_symbol() {
         SASSERT(curr() == '|');
         bool escape = false;
-        m_string.reset();
+        m_string.clear();
         next();
         while (true) {
             char c = curr();
@@ -136,7 +136,7 @@ namespace smt2 {
 
     scanner::token scanner::read_symbol() {
         SASSERT(m_normalized[static_cast<unsigned>(curr())] == 'a' || curr() == ':' || curr() == '-');
-        m_string.reset();
+        m_string.clear();
         m_string.push_back(curr());
         next();
         return read_symbol_core();
@@ -183,7 +183,7 @@ namespace smt2 {
         }
         else {
             // it is a symbol.
-            m_string.reset();
+            m_string.clear();
             m_string.push_back('-');
             return read_symbol_core();
         }
@@ -192,7 +192,7 @@ namespace smt2 {
     scanner::token scanner::read_string() {
         SASSERT(curr() == '\"');
         next();
-        m_string.reset();
+        m_string.clear();
         while (true) {
             char c = curr();
             if (m_at_eof)
@@ -377,7 +377,7 @@ namespace smt2 {
     }
 
     char const * scanner::cached_str(unsigned begin, unsigned end) {
-        m_cache_result.reset();
+        m_cache_result.clear();
         while (isspace(m_cache[begin]) && begin < end)
             begin++;
         while (begin < end && isspace(m_cache[end-1]))

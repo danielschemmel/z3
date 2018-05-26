@@ -49,7 +49,7 @@ namespace datalog {
                 rel->deallocate();
             }
         }
-        m_registers.reset();
+        m_registers.clear();
         m_reg_annotation.reset();
         reset_timelimit();
     }
@@ -1131,7 +1131,7 @@ namespace datalog {
         for (auto* t : m_data) {
             dealloc(t);
         }
-        m_data.reset();
+        m_data.clear();
         m_observer = nullptr;
     }
 

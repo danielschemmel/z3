@@ -78,7 +78,7 @@ namespace sat {
             bool sat = false;
             bool var_sign = false;
             unsigned index = 0;
-            clause.reset();
+            clause.clear();
             VERIFY(v0 == null_bool_var || legal_to_flip(v0));
             for (literal l : e.m_clauses) {
                 if (l == null_literal) {
@@ -95,7 +95,7 @@ namespace sat {
                     sat = false;
                     VERIFY(!first || !m_solver || m_solver->check_clauses(m));
                     ++index;
-                    clause.reset();
+                    clause.clear();
                     continue;                    
                 }
 
@@ -209,7 +209,7 @@ namespace sat {
     void model_converter::add_elim_stack(entry & e) {
         e.m_elim_stack.push_back(stackv().empty() ? nullptr : alloc(elim_stack, stackv()));
         // VERIFY(for (auto const& s : stackv()) VERIFY(legal_to_flip(s.second.var())););
-        stackv().reset();
+        stackv().clear();
     }
 
     void model_converter::set_clause(entry & e, literal l1, literal l2) {
@@ -336,7 +336,7 @@ namespace sat {
     }
 
     void model_converter::copy(model_converter const & src) {
-        m_entries.reset();        
+        m_entries.clear();        
         m_entries.append(src.m_entries);
         m_exposed_lim = src.m_exposed_lim;
     }
@@ -345,7 +345,7 @@ namespace sat {
         VERIFY(this != &src);
         m_entries.append(src.m_entries);
         m_exposed_lim = src.m_exposed_lim;
-        src.m_entries.reset();
+        src.m_entries.clear();
         src.m_exposed_lim = 0;
     }
 
@@ -384,7 +384,7 @@ namespace sat {
         for (unsigned i = m_exposed_lim; i < m_entries.size(); ++i) {
             entry const& e = m_entries[i];
             unsigned index = 0;
-            clause.reset();
+            clause.clear();
             for (literal l : e.m_clauses) {
                 if (l == null_literal) {
                     elim_stack* st = e.m_elim_stack[index];                    
@@ -404,7 +404,7 @@ namespace sat {
                         update_stack.append(clause);
                         update_stack.push_back(null_literal);
                     }
-                    clause.reset();
+                    clause.clear();
                 }
                 else {
                     clause.push_back(l);

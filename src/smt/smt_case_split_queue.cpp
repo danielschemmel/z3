@@ -266,7 +266,7 @@ namespace smt {
 
         void init_search_eh() override {
             m_cache.reset();
-            m_cache_domain.reset();
+            m_cache_domain.clear();
         }
 
         void end_search_eh() override {}
@@ -387,11 +387,11 @@ namespace smt {
         }
 
         void reset() override {
-            m_queue.reset();
+            m_queue.clear();
             m_head = 0;
-            m_queue2.reset();
+            m_queue2.clear();
             m_head2 = 0;
-            m_scopes.reset();
+            m_scopes.clear();
         }
 
         void push_scope() override {
@@ -586,10 +586,10 @@ namespace smt {
         }
 
         void reset() override {
-            m_queue.reset();
+            m_queue.clear();
             m_head = 0;
             m_delayed_queue.reset();
-            m_scopes.reset();
+            m_scopes.clear();
         }
 
         void push_scope() override {
@@ -829,10 +829,10 @@ namespace smt {
         }
 
         void reset() override {
-            m_queue.reset();
+            m_queue.clear();
             m_head = 0;
-            m_queue2.reset();
-            m_scopes.reset();
+            m_queue2.clear();
+            m_scopes.clear();
             m_priority_queue2.reset();
             set_global_generation();
         }

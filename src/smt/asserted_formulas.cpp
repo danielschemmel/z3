@@ -209,7 +209,7 @@ void asserted_formulas::pop_scope(unsigned num_scopes) {
 void asserted_formulas::reset() {
     m_defined_names.reset();
     m_qhead = 0;
-    m_formulas.reset();
+    m_formulas.clear();
     m_macro_manager.reset();
     m_bv_sharing.reset();
     m_rewriter.reset();
@@ -349,7 +349,7 @@ void asserted_formulas::apply_quasi_macros() {
                 m_formulas.c_ptr() + m_qhead,
                 new_fmls)) {
         swap_asserted_formulas(new_fmls);
-        new_fmls.reset();
+        new_fmls.clear();
     }
     TRACE("after_quasi_macros", display(tout););
     reduce_and_solve();
@@ -370,8 +370,8 @@ void asserted_formulas::nnf_cnf() {
         proof * pr  = m_formulas[i].get_proof();
         expr_ref   r1(m);
         proof_ref  pr1(m);
-        push_todo.reset();
-        push_todo_prs.reset();
+        push_todo.clear();
+        push_todo_prs.clear();
         CASSERT("well_sorted", is_well_sorted(m, n));
         apply_nnf(n, push_todo, push_todo_prs, r1, pr1);
         CASSERT("well_sorted",is_well_sorted(m, r1));

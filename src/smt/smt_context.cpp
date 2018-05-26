@@ -1333,11 +1333,11 @@ namespace smt {
             new_eq & entry = m_eq_propagation_queue[i];
             add_eq(entry.m_lhs, entry.m_rhs, entry.m_justification);
             if (inconsistent()) {
-                m_eq_propagation_queue.reset();
+                m_eq_propagation_queue.clear();
                 return false;
             }
         }
-        m_eq_propagation_queue.reset();
+        m_eq_propagation_queue.clear();
         return true;
     }
 
@@ -1401,7 +1401,7 @@ namespace smt {
             if (inconsistent())
                 return false;
         }
-        m_atom_propagation_queue.reset();
+        m_atom_propagation_queue.clear();
         return true;
     }
 
@@ -1666,7 +1666,7 @@ namespace smt {
             m_propagated_th_eqs.push_back(curr);
 #endif
         }
-        m_th_eq_propagation_queue.reset();
+        m_th_eq_propagation_queue.clear();
     }
 
     void context::propagate_th_diseqs() {
@@ -1680,7 +1680,7 @@ namespace smt {
             m_propagated_th_diseqs.push_back(curr);
 #endif
         }
-        m_th_diseq_propagation_queue.reset();
+        m_th_diseq_propagation_queue.clear();
     }
 
     bool context::can_theories_propagate() const {
@@ -2325,7 +2325,7 @@ namespace smt {
                     cls->m_reinternalize_atoms = false;
                 }
             }
-            v.reset();
+            v.clear();
         }
         CASSERT("reinit_clauses", check_clauses(m_lemmas));
         CASSERT("reinit_clauses", check_lit_occs());
@@ -2346,8 +2346,8 @@ namespace smt {
             TRACE("reassert_units", tout << "reasserting #" << unit->get_id() << " " << sign << " @ " << m_scope_lvl << "\n";);
         }
         if (at_base_level()) {
-            m_units_to_reassert.reset();
-            m_units_to_reassert_sign.reset();
+            m_units_to_reassert.clear();
+            m_units_to_reassert_sign.clear();
         }
     }
 
@@ -2414,10 +2414,10 @@ namespace smt {
 
             m_asserted_formulas.pop_scope(num_scopes);
 
-            m_eq_propagation_queue.reset();
-            m_th_eq_propagation_queue.reset();
-            m_th_diseq_propagation_queue.reset();
-            m_atom_propagation_queue.reset();
+            m_eq_propagation_queue.clear();
+            m_th_eq_propagation_queue.clear();
+            m_th_diseq_propagation_queue.clear();
+            m_atom_propagation_queue.clear();
 
             m_region.pop_scope(num_scopes);
             m_scopes.shrink(new_lvl);
@@ -3151,7 +3151,7 @@ namespace smt {
         for (auto& p : m_tmp_clauses) {
             if (p.first) del_clause(false, p.first);
         }
-        m_tmp_clauses.reset();
+        m_tmp_clauses.clear();
     }
 
     lbool context::decide_clause() {
@@ -3194,7 +3194,7 @@ namespace smt {
     void context::init_assumptions(expr_ref_vector const& asms) {
         reset_assumptions();
         m_literal2assumption.reset();
-        m_unsat_core.reset();
+        m_unsat_core.clear();
         if (!asms.empty()) {
             // We must give a chance to the theories to propagate before we create a new scope...
             propagate();
@@ -3243,7 +3243,7 @@ namespace smt {
         TRACE("unsat_core_bug", tout << "reset " << m_assumptions << "\n";);
         for (literal lit : m_assumptions) 
             get_bdata(lit.var()).m_assumption = false;
-        m_assumptions.reset();
+        m_assumptions.clear();
     }
 
     bool context::should_research(lbool r) {
@@ -3310,7 +3310,7 @@ namespace smt {
             return false;
         }
         reset_tmp_clauses();
-        m_unsat_core.reset();
+        m_unsat_core.clear();
         m_stats.m_num_checks++;
         pop_to_base_lvl();
         return true;
@@ -3447,7 +3447,7 @@ namespace smt {
             th->init_search_eh();
         }
         m_qmanager->init_search_eh();
-        m_incomplete_theories.reset();
+        m_incomplete_theories.clear();
         m_num_conflicts                = 0;
         m_num_conflicts_since_restart  = 0;
         m_num_conflicts_since_lemma_gc = 0;
@@ -3459,7 +3459,7 @@ namespace smt {
         m_lemma_gc_threshold           = m_fparams.m_lemma_gc_initial;
         m_last_search_failure          = OK;
         m_unsat_proof                  = nullptr;
-        m_unsat_core                   .reset();
+        m_unsat_core                   .clear();
         m_dyn_ack_manager              .init_search_eh();
         m_final_check_idx              = 0;
         m_phase_default                = false;
@@ -3775,7 +3775,7 @@ namespace smt {
         if (ok != FC_DONE)
             return ok;
 
-        m_incomplete_theories.reset();
+        m_incomplete_theories.clear();
 
         unsigned old_idx          = m_final_check_idx;
         unsigned num_th           = m_theory_set.size();
@@ -3865,10 +3865,10 @@ namespace smt {
         }
         if (m_fparams.m_phase_selection == PS_CACHING_CONSERVATIVE || m_fparams.m_phase_selection == PS_CACHING_CONSERVATIVE2)
             forget_phase_of_vars_in_current_level();
-        m_atom_propagation_queue.reset();
-        m_eq_propagation_queue.reset();
-        m_th_eq_propagation_queue.reset();
-        m_th_diseq_propagation_queue.reset();
+        m_atom_propagation_queue.clear();
+        m_eq_propagation_queue.clear();
+        m_th_eq_propagation_queue.clear();
+        m_th_diseq_propagation_queue.clear();
         if (m_conflict_resolution->resolve(m_conflict, m_not_l)) {
             unsigned new_lvl = m_conflict_resolution->get_new_scope_lvl();
             unsigned num_lits = m_conflict_resolution->get_lemma_num_literals();
@@ -4073,7 +4073,7 @@ namespace smt {
       cause incompleteness.
      */
     void context::record_relevancy(unsigned n, literal const* lits) {
-        m_relevant_conflict_literals.reset();
+        m_relevant_conflict_literals.clear();
         for (unsigned i = 0; i < n; ++i) {
             m_relevant_conflict_literals.push_back(is_relevant(lits[i]));
         }

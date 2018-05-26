@@ -57,7 +57,7 @@ namespace datatype {
 
     constructor::~constructor() {
         for (accessor* a : m_accessors) dealloc(a);
-        m_accessors.reset();
+        m_accessors.clear();
     }
     util& constructor::u() const { return m_def->u(); }
 
@@ -668,7 +668,7 @@ namespace datatype {
                 for (accessor const* a : *c) {
                     sort* d = a->range();
                     // check if d is a datatype sort
-                    subsorts.reset();
+                    subsorts.clear();
                     get_subsorts(d, subsorts);
                     for (sort * s2 : subsorts) {
                         if (is_datatype(s2)) {
@@ -835,7 +835,7 @@ namespace datatype {
                 def const& d = get_def(s);
                 for (constructor const* c : d) {
                     for (accessor const* a : *c) {
-                        subsorts.reset();
+                        subsorts.clear();
                         get_subsorts(a->range(), subsorts);
                         for (sort* srt : subsorts) {
                             if (sort2id.find(srt, id) && !well_founded[id]) {
@@ -888,7 +888,7 @@ namespace datatype {
             return true;
         }
         unsigned n = get_array_arity(s);
-        subsorts.reset();
+        subsorts.clear();
         for (unsigned i = 0; i < n; ++i) {
             get_subsorts(get_array_domain(s, i), subsorts);
         }
@@ -1073,8 +1073,8 @@ namespace datatype {
         m_is_recursive.reset();
         m_is_enum.reset();
         std::for_each(m_vectors.begin(), m_vectors.end(), delete_proc<ptr_vector<func_decl> >());
-        m_vectors.reset();
-        m_asts.reset();
+        m_vectors.clear();
+        m_asts.clear();
         ++m_start;
     }
 

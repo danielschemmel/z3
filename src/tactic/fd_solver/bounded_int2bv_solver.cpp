@@ -112,7 +112,7 @@ public:
     }
 
     void pop_core(unsigned n) override {
-        m_assertions.reset();
+        m_assertions.clear();
         m_solver->pop(n);
 
         if (n > 0) {
@@ -333,7 +333,7 @@ private:
                 TRACE("int2bv", tout << fml2 << "\n";);
             }
         }
-        m_assertions.reset();
+        m_assertions.clear();
         m_rewriter.reset();
     }
 

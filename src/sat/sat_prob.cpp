@@ -155,8 +155,8 @@ namespace sat {
     }
     
     void prob::flatten_use_list() {
-        m_use_list_index.reset();
-        m_flat_use_list.reset();
+        m_use_list_index.clear();
+        m_flat_use_list.clear();
         for (auto const& ul : m_use_list) {
             m_use_list_index.push_back(m_flat_use_list.size());
             m_flat_use_list.append(ul);
@@ -168,7 +168,7 @@ namespace sat {
         for (unsigned& b : m_breaks) {
             b = 0;
         }
-        m_unsat.reset();
+        m_unsat.clear();
         for (unsigned i = 0; i < m_clauses.size(); ++i) {
             clause_info& ci = m_clauses[i];
             ci.m_num_trues = 0;

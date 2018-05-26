@@ -298,7 +298,7 @@ namespace smt {
         }
 
         void reset_bool_vars() {
-            m_expr2bool_var.reset();
+            m_expr2bool_var.clear();
         }
 
         bool_var get_bool_var(expr const * n) const {

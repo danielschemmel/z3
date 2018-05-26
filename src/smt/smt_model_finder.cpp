@@ -418,13 +418,13 @@ namespace smt {
 
             void reset_sort2k() {
                 m_sort2k.reset();
-                m_ks.reset();
+                m_ks.clear();
             }
 
             void reset_eval_cache() {
                 m_eval_cache[0].reset();
                 m_eval_cache[1].reset();
-                m_eval_cache_range.reset();
+                m_eval_cache_range.clear();
             }
 
             node * mk_node(key2node & map, ast * n, unsigned i, sort * s) {
@@ -491,11 +491,11 @@ namespace smt {
                         
             void reset() {
                 flush_nodes();
-                m_nodes.reset();
+                m_nodes.clear();
                 m_next_node_id = 0;
                 m_uvars.reset();
                 m_A_f_is.reset();
-                m_root_nodes.reset();
+                m_root_nodes.clear();
                 reset_sort2k();
             }
 
@@ -544,7 +544,7 @@ namespace smt {
                 for (node * curr : m_nodes) {
                     if (curr->is_root()) {
                         instantiation_set * s = curr->get_instantiation_set();
-                        to_delete.reset();
+                        to_delete.clear();
                         obj_map<expr, unsigned> const & elems = s->get_elems();
                         for (auto const& kv : elems) {
                             expr * n     = kv.m_key;
@@ -994,7 +994,7 @@ namespace smt {
                \brief Store in m_root_nodes the roots from m_nodes.
              */
             void collect_root_nodes() {
-                m_root_nodes.reset();
+                m_root_nodes.clear();
                 for (node * n : m_nodes) {
                     if (n->is_root())
                         m_root_nodes.push_back(n);
@@ -2454,7 +2454,7 @@ namespace smt {
                 ptr_vector<quantifier> curr_qs(qs);
                 while (process(curr_qs, new_qs, residue)) {
                     curr_qs.swap(new_qs);
-                    new_qs.reset();
+                    new_qs.clear();
                 }
             }
         };
@@ -2629,9 +2629,9 @@ namespace smt {
                 std::for_each(m_esets.begin(), m_esets.end(), delete_proc<expr_set>());
                 m_q_f.reset();
                 m_q_f_def.reset();
-                m_qsets.reset();
+                m_qsets.clear();
                 m_f2defs.reset();
-                m_esets.reset();
+                m_esets.clear();
             }
 
             func_decl_set              m_forbidden;
@@ -2670,7 +2670,7 @@ namespace smt {
                         return;
                     SASSERT(qcandidates.size() < curr.size());
                     curr.swap(qcandidates);
-                    qcandidates.reset();
+                    qcandidates.clear();
                 }
             }
 
@@ -3231,7 +3231,7 @@ namespace smt {
     }
 
     void model_finder::reset() {
-        m_scopes.reset();
+        m_scopes.clear();
         m_dependencies.reset();
         restore_quantifiers(0);
         SASSERT(m_q2info.empty());
@@ -3424,7 +3424,7 @@ namespace smt {
                 // asserting it as an AXIOM
                 m_context->assign(l, b_justification());
             }
-            m_new_constraints.reset();
+            m_new_constraints.clear();
         }
     }
 };

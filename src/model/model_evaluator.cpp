@@ -530,7 +530,7 @@ struct evaluator_cfg : public default_rewriter_cfg {
         unsigned sz = g->num_entries();
         expr_ref_vector store(m);
         for (unsigned i = 0; i < sz; ++i) {
-            store.reset();
+            store.clear();
             func_entry const* fe = g->get_entry(i);
             expr* res = fe->get_result();
             if (m.are_equal(else_case, res)) {

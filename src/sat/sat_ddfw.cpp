@@ -141,8 +141,8 @@ namespace sat {
         for (auto& ci : m_clauses) {
             m_alloc.del_clause(ci.m_clause);
         }
-        m_clauses.reset(); 
-        m_use_list.reset();
+        m_clauses.clear(); 
+        m_use_list.clear();
         m_num_non_binary_clauses = 0;
 
         unsigned trail_sz = s.init_trail_size();
@@ -176,7 +176,7 @@ namespace sat {
     }
 
     void ddfw::init(unsigned sz, literal const* assumptions) {
-        m_assumptions.reset();
+        m_assumptions.clear();
         m_assumptions.append(sz, assumptions);
         add_assumptions();
         for (unsigned v = 0; v < num_vars(); ++v) {
@@ -217,8 +217,8 @@ namespace sat {
     }
 
     void ddfw::flatten_use_list() {
-        m_use_list_index.reset();
-        m_flat_use_list.reset();
+        m_use_list_index.clear();
+        m_flat_use_list.clear();
         for (auto const& ul : m_use_list) {
             m_use_list_index.push_back(m_flat_use_list.size());
             m_flat_use_list.append(ul);
@@ -314,8 +314,8 @@ namespace sat {
             make_count(v) = 0;
             reward(v) = 0;
         }
-        m_unsat_vars.reset();
-        m_unsat.reset();
+        m_unsat_vars.clear();
+        m_unsat.clear();
         unsigned sz = m_clauses.size();
         for (unsigned i = 0; i < sz; ++i) {
             auto& ci = m_clauses[i];
@@ -392,7 +392,7 @@ namespace sat {
             if (sum == 0) {
                 sum = 0.01;
             }
-            m_probs.reset();
+            m_probs.clear();
             for (unsigned v = 0; v < num_vars(); ++v) {
                 m_probs.push_back(exp(m_config.m_itau * (m_vars[v].m_reward_avg - max_avg)) / sum);
             }
