@@ -199,7 +199,7 @@ public:
                 }
                 // unit resolution that collapsed to nothing
                 if (parents.size() == 1) {
-                    newp = parents.get(0);
+                    newp = parents[0];
                 }
                 else {
                     // rebuild unit resolution
