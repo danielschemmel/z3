@@ -379,7 +379,7 @@ expr* func_interp::get_array_interp_core(func_decl * f) const {
         vector<symbol> var_names;
         for (unsigned i = 0; i < m_arity; ++i) {
             var_names.push_back(symbol(i));
-            vars.push_back(domain.get(m_arity - i - 1));
+            vars.push_back(domain[m_arity - i - 1]);
         }
         r = m_manager.mk_lambda(vars.size(), vars.c_ptr(), var_names.c_ptr(), r);        
         return r;
