@@ -5725,7 +5725,7 @@ namespace realclosure {
 
             void mark(extension * ext) {
                 if (ext->is_algebraic()) {
-                    m_visited.reserve(ext->idx() + 1, false);
+                    m_visited.expand(ext->idx() + 1, false);
                     if (!m_visited[ext->idx()]) {
                         m_visited[ext->idx()] = true;
                         algebraic * a = to_algebraic(ext);

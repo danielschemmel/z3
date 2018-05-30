@@ -458,7 +458,7 @@ namespace sat {
         }
         // TBD: we just mark variables instead of literals because entries don't have directly literal information.
         for (unsigned i = 0; i < n; ++i) {
-            m_mark.reserve(lits[i].var() + 1);
+            m_mark.expand(lits[i].var() + 1);
             m_mark[lits[i].var()] = true;
         }
     }

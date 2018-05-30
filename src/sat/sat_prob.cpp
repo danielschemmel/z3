@@ -112,12 +112,12 @@ namespace sat {
         m_clause_db.push_back(cls);
         m_clauses.push_back(clause_info());
         for (literal lit : *cls) {
-            m_values.reserve(lit.var()+1);
-            m_breaks.reserve(lit.var()+1);
-            m_use_list.reserve(lit.index()+1);
+            m_values.expand(lit.var()+1);
+            m_breaks.expand(lit.var()+1);
+            m_use_list.expand(lit.index()+1);
             m_use_list[lit.index()].push_back(idx);
         }
-        m_probs.reserve(n+1);
+        m_probs.expand(n+1);
     }
 
     void prob::add(solver const& s) {
@@ -146,8 +146,8 @@ namespace sat {
 
     void prob::save_best_values() {
         m_best_min_unsat = m_unsat.size();
-        m_best_values.reserve(m_values.size());
-        m_model.reserve(m_values.size());
+        m_best_values.expand(m_values.size());
+        m_model.expand(m_values.size());
         for (unsigned i = 0; i < m_values.size(); ++i) {
             m_best_values[i] = m_values[i];
             m_model[i] = to_lbool(m_values[i]);
@@ -211,7 +211,7 @@ namespace sat {
             max_num_occ = std::max(max_num_occ, ul.size());
         }
         // vodoo from prob-sat
-        m_prob_break.reserve(max_num_occ+1);
+        m_prob_break.expand(max_num_occ+1);
         for (int i = 0; i <= static_cast<int>(max_num_occ); ++i) {
             m_prob_break[i] = pow(m_config.m_cb, -i);
         }

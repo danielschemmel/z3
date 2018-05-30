@@ -47,7 +47,7 @@ namespace sat {
     void parallel::vector_pool::begin_add_vector(unsigned owner, unsigned n) {
         SASSERT(m_tail < m_size);
         unsigned capacity = n + 2;
-        m_vectors.reserve(m_size + capacity, 0);
+        m_vectors.expand(m_size + capacity, 0);
         IF_VERBOSE(3, verbose_stream() << owner << ": begin-add " << n << " tail: " << m_tail << " size: " << m_size << "\n";);
         for (unsigned i = 0; i < m_heads.size(); ++i) {
             while (m_tail < m_heads[i] && m_heads[i] < m_tail + capacity) {

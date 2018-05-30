@@ -131,8 +131,8 @@ namespace sat {
         unsigned idx = m_clauses.size();
         m_clauses.push_back(clause_info(cls, m_config.m_init_clause_weight));
         for (literal lit : *cls) {
-            m_use_list.reserve(lit.index()+1);
-            m_vars.reserve(lit.var()+1);
+            m_use_list.expand(lit.index()+1);
+            m_vars.expand(lit.var()+1);
             m_use_list[lit.index()].push_back(idx);
         }
     }
@@ -405,7 +405,7 @@ namespace sat {
 
     void ddfw::save_best_values() {
         if (m_unsat.empty()) {
-            m_model.reserve(num_vars());
+            m_model.expand(num_vars());
             for (unsigned i = 0; i < num_vars(); ++i) {
                 m_model[i] = to_lbool(value(i));
             }
