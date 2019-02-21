@@ -113,14 +113,14 @@ namespace sat {
         clause_vector           m_learned;
         unsigned                m_num_frozen;
         vector<watch_list>      m_watches;
-        char_vector             m_assignment;
+        vector<char>            m_assignment;
         vector<justification>   m_justification; 
         vector<char>            m_decision;
         vector<char>            m_mark;
         vector<char>            m_lit_mark;
         vector<char>            m_eliminated;
         vector<char>            m_external;
-        unsigned_vector         m_touched;
+        vector<unsigned>        m_touched;
         unsigned                m_touch_index;
         literal_vector          m_replay_assign;
         // branch variable selection:

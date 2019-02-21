@@ -61,14 +61,14 @@ namespace sat {
         vector<clause_info> m_clauses;
         vector<bool>     m_values, m_best_values;
         unsigned         m_best_min_unsat;
-        vector<unsigned_vector> m_use_list;
-        unsigned_vector  m_flat_use_list;
-        unsigned_vector  m_use_list_index;
+        vector<vector<unsigned>> m_use_list;
+        vector<unsigned> m_flat_use_list;
+        vector<unsigned> m_use_list_index;
         vector<double>   m_prob_break;
         vector<double>   m_probs;
         indexed_uint_set m_unsat;
         random_gen       m_rand;
-        unsigned_vector  m_breaks;
+        vector<unsigned> m_breaks;
         uint64_t         m_flips;
         uint64_t         m_next_restart;
         unsigned         m_restart_count;

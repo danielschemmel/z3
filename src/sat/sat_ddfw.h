@@ -84,9 +84,9 @@ namespace sat {
         vector<double>      m_scores;      // reward -> score
         model               m_model;       // var -> best assignment
         
-        vector<unsigned_vector> m_use_list;
-        unsigned_vector  m_flat_use_list;
-        unsigned_vector  m_use_list_index;
+        vector<vector<unsigned>> m_use_list;
+        vector<unsigned> m_flat_use_list;
+        vector<unsigned> m_use_list_index;
 
         indexed_uint_set m_unsat;
         indexed_uint_set m_unsat_vars;  // set of variables that are in unsat clauses
