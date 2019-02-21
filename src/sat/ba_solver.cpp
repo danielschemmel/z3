@@ -3195,7 +3195,7 @@ namespace sat {
         validate_eliminated(m_learned);
     }
 
-    void ba_solver::validate_eliminated(ptr_vector<constraint> const& cs) {
+    void ba_solver::validate_eliminated(vector<constraint*> const& cs) {
         for (constraint const* c : cs) {
             if (c->learned()) continue;
             switch (c->tag()) {
@@ -3852,7 +3852,7 @@ namespace sat {
         extract_ternary(s().m_clauses);
         extract_ternary(s().m_learned);
         for (unsigned v = 0; v < sz; ++v) {
-            ptr_vector<clause>& cs = m_ternary[v];
+            vector<clause*>& cs = m_ternary[v];
             for (unsigned i = 0; i < cs.size() && !cs[i]->is_learned(); ++i) {
                 clause& c = *cs[i];                
                 if (c.was_removed()) continue;
@@ -4226,10 +4226,10 @@ namespace sat {
         }
     }
 
-    void ba_solver::cleanup_constraints(ptr_vector<constraint>& cs, bool learned) {
-        ptr_vector<constraint>::iterator it = cs.begin();
-        ptr_vector<constraint>::iterator it2 = it;
-        ptr_vector<constraint>::iterator end = cs.end();
+    void ba_solver::cleanup_constraints(vector<constraint*>& cs, bool learned) {
+        vector<constraint*>::iterator it = cs.begin();
+        vector<constraint*>::iterator it2 = it;
+        vector<constraint*>::iterator end = cs.end();
         for (; it != end; ++it) {
             constraint& c = *(*it);
             if (c.was_removed()) {
@@ -4562,7 +4562,7 @@ namespace sat {
         if (learned) copy_constraints(result, m_learned);
     }
 
-    void ba_solver::copy_constraints(ba_solver* result, ptr_vector<constraint> const& constraints) {
+    void ba_solver::copy_constraints(ba_solver* result, vector<constraint*> const& constraints) {
         literal_vector lits;
         vector<wliteral> wlits;
         for (constraint* cp : constraints) {

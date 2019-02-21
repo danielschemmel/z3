@@ -224,7 +224,7 @@ br_status array_rewriter::mk_select_core(unsigned num_args, expr * const * args,
         func_decl* f0 = m_util.get_map_func_decl(a);
         expr_ref_vector args0(m());
         for (expr* arg : *a) {
-            ptr_vector<expr> args1;
+            vector<expr*> args1;
             args1.push_back(arg);
             args1.append(num_args-1, args + 1);
             args0.push_back(m_util.mk_select(args1.size(), args1.c_ptr()));
@@ -242,7 +242,7 @@ br_status array_rewriter::mk_select_core(unsigned num_args, expr * const * args,
 
     expr* c, *th, *el;
     if (m_expand_select_ite && m().is_ite(args[0], c, th, el)) {
-        ptr_vector<expr> args1, args2;
+        vector<expr*> args1, args2;
         args1.push_back(th);
         args1.append(num_args-1, args + 1);
         args2.push_back(el);
@@ -257,7 +257,7 @@ br_status array_rewriter::mk_select_core(unsigned num_args, expr * const * args,
 sort_ref array_rewriter::get_map_array_sort(func_decl* f, unsigned num_args, expr* const* args) {
     sort* s0 = m().get_sort(args[0]);
     unsigned sz = get_array_arity(s0);
-    ptr_vector<sort> domain;
+    vector<sort*> domain;
     for (unsigned i = 0; i < sz; ++i) domain.push_back(get_array_domain(s0, i));
     return sort_ref(m_util.mk_array_sort(sz, domain.c_ptr(), f->get_range()), m());
 }
@@ -591,7 +591,7 @@ bool array_rewriter::has_index_set(expr* e, expr_ref& else_case, vector<expr_ref
 bool array_rewriter::add_store(expr_ref_vector& args, unsigned num_idxs, expr* e, expr* store_val, vector<expr_ref_vector>& stores) {
 
     expr* e1, *e2;
-    ptr_vector<expr> eqs;    
+    vector<expr*> eqs;    
     args.clear();
     args.resize(num_idxs + 1, nullptr);
     bool is_not = m().is_bool(store_val) && m().is_not(e, e);

@@ -105,7 +105,7 @@ void func_interp::reset_interp_cache() {
     m_array_interp = nullptr;
 }
 
-bool func_interp::is_fi_entry_expr(expr * e, ptr_vector<expr> & args) {
+bool func_interp::is_fi_entry_expr(expr * e, vector<expr*> & args) {
     args.clear();
     expr* c, *t, *f, *a0, *a1;
     if (!m().is_ite(e, c, t, f)) {
@@ -144,7 +144,7 @@ void func_interp::set_else(expr * e) {
 
     TRACE("func_interp", tout << "set_else: " << expr_ref(e, m()) << "\n";);
 
-    ptr_vector<expr> args;
+    vector<expr*> args;
     while (e && is_fi_entry_expr(e, args)) {
         insert_entry(args.c_ptr(), to_app(e)->get_arg(1));
         e = to_app(e)->get_arg(2);
@@ -359,7 +359,7 @@ expr * func_interp::get_interp_core() const {
 expr* func_interp::get_array_interp_core(func_decl * f) const {
     if (m_else == nullptr) 
         return nullptr;
-    ptr_vector<sort> domain;
+    vector<sort*> domain;
     for (sort* s : *f) {
         domain.push_back(s);
     }

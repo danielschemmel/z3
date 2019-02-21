@@ -233,9 +233,9 @@ namespace sat {
         small_object_allocator m_allocator;
        
 
-        ptr_vector<constraint> m_constraints;
-        ptr_vector<constraint> m_learned;
-        ptr_vector<constraint> m_constraint_to_reinit;
+        vector<constraint*> m_constraints;
+        vector<constraint*> m_learned;
+        vector<constraint*> m_constraint_to_reinit;
         vector<unsigned>        m_constraint_to_reinit_lim;
         unsigned               m_constraint_to_reinit_last_sz;
         unsigned               m_constraint_id;
@@ -334,7 +334,7 @@ namespace sat {
         void cleanup_clauses();
         void cleanup_clauses(clause_vector& clauses);
         void cleanup_constraints();
-        void cleanup_constraints(ptr_vector<constraint>& cs, bool learned);
+        void cleanup_constraints(vector<constraint*>& cs, bool learned);
         void remove_constraint(constraint& c, char const* reason);
 
         // constraints
@@ -360,7 +360,7 @@ namespace sat {
         bool validate_conflict(constraint const& c) const;
         bool validate_unit_propagation(constraint const& c, literal alit) const;
         void validate_eliminated();
-        void validate_eliminated(ptr_vector<constraint> const& cs);
+        void validate_eliminated(vector<constraint*> const& cs);
         void attach_constraint(constraint const& c);
         void detach_constraint(constraint const& c);
         lbool eval(constraint const& c) const;
@@ -428,7 +428,7 @@ namespace sat {
         void barbet_add_xor(bool parity, clause& c);
         unsigned get_clause_filter(clause& c);
 
-        vector<ptr_vector<clause>> m_ternary;
+        vector<vector<clause*>> m_ternary;
         void extract_ternary(clause_vector const& clauses);
         bool extract_xor(clause& c, literal l);
         bool extract_xor(clause& c1, clause& c2);
@@ -566,7 +566,7 @@ namespace sat {
         bool        all_distinct(clause const& cl);
 
         void copy_core(ba_solver* result, bool learned);
-        void copy_constraints(ba_solver* result, ptr_vector<constraint> const& constraints);
+        void copy_constraints(ba_solver* result, vector<constraint*> const& constraints);
 
     public:
         ba_solver();
@@ -607,7 +607,7 @@ namespace sat {
         bool is_blocked(literal l, ext_constraint_idx idx) override;
         bool check_model(model const& m) const override;
 
-        ptr_vector<constraint> const & constraints() const { return m_constraints; }
+        vector<constraint*> const & constraints() const { return m_constraints; }
         void display(std::ostream& out, constraint const& c, bool values) const;
 
         bool validate() override;

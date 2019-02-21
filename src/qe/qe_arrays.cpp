@@ -94,7 +94,7 @@ namespace {
             SASSERT (m_arr_u.is_array (lhs) &&
                      m_arr_u.is_array (rhs) &&
                      m.get_sort(lhs) == m.get_sort(rhs));
-            ptr_vector<sort> sorts;
+            vector<sort*> sorts;
             sorts.push_back (m.get_sort (m_lhs));
             sorts.push_back (m.get_sort (m_rhs));
             for (auto const& v : diff_indices) {
@@ -113,7 +113,7 @@ namespace {
 
         app_ref mk_peq () {
             if (!m_peq) {
-                ptr_vector<expr> args;
+                vector<expr*> args;
                 args.push_back (m_lhs);
                 args.push_back (m_rhs);
                 for (auto const& v : m_diff_indices) {
@@ -133,7 +133,7 @@ namespace {
                 // lhs = (...(store (store rhs i0 v0) i1 v1)...)
                 sort* val_sort = get_array_range (m.get_sort (lhs));
                 for (expr_ref_vector const& diff : m_diff_indices) {
-                    ptr_vector<expr> store_args;
+                    vector<expr*> store_args;
                     store_args.push_back (rhs);
                     store_args.append (diff.size(), diff.c_ptr());
                     app_ref val(m.mk_fresh_const ("diff", val_sort), m);
@@ -219,7 +219,7 @@ namespace qe {
         void find_arr_eqs (expr_ref const& fml, app_ref_vector& eqs) {
             if (!is_app (fml)) return;
             ast_mark done;
-            ptr_vector<app> todo;
+            vector<app*> todo;
             todo.push_back (to_app (fml));
             while (!todo.empty ()) {
                 app* a = todo.back ();
@@ -274,7 +274,7 @@ namespace qe {
         void factor_selects (app_ref& fml) {
             expr_map sel_cache (m);
             ast_mark done;
-            ptr_vector<app> todo;
+            vector<app*> todo;
             expr_ref_vector pinned (m); // to ensure a reference
 
             todo.push_back (fml);
@@ -356,7 +356,7 @@ namespace qe {
             SASSERT (num_diff == I.size ());
             for (unsigned i = 0; i < num_diff; i++) {
                 // mk val term
-                ptr_vector<expr> sel_args;
+                vector<expr*> sel_args;
                 sel_args.push_back (arr);
                 sel_args.append(I[i].size(), I[i].c_ptr());
                 expr_ref val_term (m_arr_u.mk_select (sel_args), m);
@@ -450,7 +450,7 @@ namespace qe {
                         TRACE ("qe", tout << "new peq:\n" << p_exp << "\n"; );
 
                         // arr1[idx] == x
-                        ptr_vector<expr> sel_args;
+                        vector<expr*> sel_args;
                         sel_args.push_back (arr1);
                         sel_args.append(idxs.size(), idxs.c_ptr());
                         expr_ref arr1_idx (m_arr_u.mk_select (sel_args), m);
@@ -743,7 +743,7 @@ namespace qe {
                 return true;
             }
 
-            ptr_vector<app> todo;
+            vector<app*> todo;
             todo.push_back (to_app (e));
             expr_ref_vector args (m);
 
@@ -823,7 +823,7 @@ namespace qe {
                     array = a->get_arg (0);
                 }
             }
-            ptr_vector<expr> args;
+            vector<expr*> args;
             args.push_back(array);
             args.append(arity, js);
             expr* r = m_arr_u.mk_select (args);
@@ -893,7 +893,7 @@ namespace qe {
      */
 
     class array_project_selects_util {
-        typedef obj_map<app, ptr_vector<app>*> sel_map;
+        typedef obj_map<app, vector<app*>*> sel_map;
 
         struct idx_val {
             expr_ref_vector idx;
@@ -937,7 +937,7 @@ namespace qe {
         void collect_selects (expr* fml) {
             if (!is_app (fml)) return;
             ast_mark done;
-            ptr_vector<app> todo;
+            vector<app*> todo;
             todo.push_back (to_app (fml));
             for (unsigned i = 0; i < todo.size(); ++i) {
                 app* a = todo[i];
@@ -951,7 +951,7 @@ namespace qe {
                 if (m_arr_u.is_select (a)) {
                     expr* arr = a->get_arg (0);
                     if (m_arr_test.is_marked (arr)) {
-                        ptr_vector<app>* lst = m_sel_terms.find (to_app (arr));;
+                        vector<app*>* lst = m_sel_terms.find (to_app (arr));;
                         lst->push_back (a);
                     }
                 }
@@ -1015,7 +1015,7 @@ namespace qe {
          *
          * update sub with val consts for sel terms
          */
-        void ackermann (ptr_vector<app> const& sel_terms) {
+        void ackermann (vector<app*> const& sel_terms) {
             if (sel_terms.empty ()) return;
 
             expr* v = sel_terms[0]->get_arg (0); // array variable
@@ -1083,7 +1083,7 @@ namespace qe {
             else {
                 datatype::util dt(m);
                 sort_ref_vector srts(m);
-                ptr_vector<accessor_decl> acc;
+                vector<accessor_decl*> acc;
                 unsigned i = 0;
                 for (expr * x : m_idxs[0].idx) {
                     std::stringstream name;
@@ -1095,7 +1095,7 @@ namespace qe {
                 VERIFY(dt.get_plugin()->mk_datatypes(1, &dts, 0, nullptr, srts));
                 del_datatype_decl(dts);
                 sort* tuple = srts.get(0);
-                ptr_vector<func_decl> const & decls = *dt.get_datatype_constructors(tuple);
+                vector<func_decl*> const & decls = *dt.get_datatype_constructors(tuple);
                 expr_ref_vector xs(m);
                 for (unsigned i = start; i < m_idxs.size(); ++i) {
                     xs.push_back(m.mk_app(decls[0], m_idxs[i].idx.size(), m_idxs[i].idx.c_ptr()));
@@ -1155,7 +1155,7 @@ namespace qe {
             // alloc empty map from array var to sel terms over it
             for (app* v : arr_vars) {
                 m_arr_test.mark(v, true);
-                m_sel_terms.insert(v, alloc (ptr_vector<app>));
+                m_sel_terms.insert(v, alloc (vector<app*>));
             }
 
             // assume all arr_vars are of array sort
@@ -1531,17 +1531,17 @@ namespace qe {
 
         void assert_store_select(app* store, model & mdl, term_graph& tg, expr_ref_vector& lits) {
             SASSERT(a.is_store(store));
-            ptr_vector<app> indices;
+            vector<app*> indices;
             for (unsigned i = 1; i + 1 < store->get_num_args(); ++i) {
                 SASSERT(indices.empty());
                 assert_store_select(indices, store, mdl, tg, lits);
             }
         }
 
-        void assert_store_select(ptr_vector<app>& indices, app* store, model & mdl, term_graph& tg, expr_ref_vector& lits) {
+        void assert_store_select(vector<app*>& indices, app* store, model & mdl, term_graph& tg, expr_ref_vector& lits) {
             unsigned sz = store->get_num_args();
             if (indices.size() + 2 == sz) {
-                ptr_vector<expr> args;
+                vector<expr*> args;
                 args.push_back(store);
                 for (expr* idx : indices) args.push_back(idx);
                 for (unsigned i = 1; i + 1 < sz; ++i) {

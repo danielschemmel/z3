@@ -414,7 +414,7 @@ namespace smt {
                     lits.push_back(~mk_literal(kv.m_value));
                 }
                 if (info.m_selects.size() > 1) {
-                    ptr_vector<expr> args;
+                    vector<expr*> args;
                     for (auto const& kv : info.m_selects) {
                         args.push_back(kv.m_key->get_owner());
                     }

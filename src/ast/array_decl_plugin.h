@@ -188,7 +188,7 @@ public:
         return m_manager.mk_app(m_fid, OP_SELECT, 0, nullptr, num_args, args);
     }
 
-    app * mk_select(ptr_vector<expr> const& args) {
+    app * mk_select(vector<expr*> const& args) {
         return mk_select(args.size(), args.c_ptr());
     }
 

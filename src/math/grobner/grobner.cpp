@@ -64,7 +64,7 @@ void grobner::del_equation(equation * eq) {
     dealloc(eq);
 }
 
-void grobner::del_monomials(ptr_vector<monomial>& ms) {
+void grobner::del_monomials(vector<monomial*>& ms) {
     for (auto& m : ms) {
         del_monomial(m);
     }
@@ -137,8 +137,8 @@ void grobner::display_monomial(std::ostream & out, monomial const & m) const {
     }
     
     if (!m.m_vars.empty()) {
-        ptr_vector<expr>::const_iterator it  = m.m_vars.begin();
-        ptr_vector<expr>::const_iterator end = m.m_vars.end();
+        vector<expr*>::const_iterator it  = m.m_vars.begin();
+        vector<expr*>::const_iterator end = m.m_vars.end();
         unsigned power = 1;
         expr *   prev  = *it;
         it++;
@@ -249,9 +249,9 @@ bool grobner::monomial_lt::operator()(monomial * m1, monomial * m2) const {
         return true;
     if (m1->get_degree() < m2->get_degree())
         return false;
-    ptr_vector<expr>::iterator it1  = m1->m_vars.begin();
-    ptr_vector<expr>::iterator it2  = m2->m_vars.begin();
-    ptr_vector<expr>::iterator end1 = m1->m_vars.end();
+    vector<expr*>::iterator it1  = m1->m_vars.begin();
+    vector<expr*>::iterator it2  = m2->m_vars.begin();
+    vector<expr*>::iterator end1 = m1->m_vars.end();
     for (; it1 != end1; ++it1, ++it2) {
         expr * v1 = *it1;
         expr * v2 = *it2;
@@ -322,7 +322,7 @@ void grobner::init_equation(equation * eq, v_dependency * d) {
 }
 
 void grobner::assert_eq_0(unsigned num_monomials, monomial * const * monomials, v_dependency * ex) {
-    ptr_vector<monomial> ms;
+    vector<monomial*> ms;
     ms.append(num_monomials, monomials);
     std::stable_sort(ms.begin(), ms.end(), m_monomial_lt);
     merge_monomials(ms);
@@ -337,7 +337,7 @@ void grobner::assert_eq_0(unsigned num_monomials, monomial * const * monomials, 
 
 void grobner::assert_eq_0(unsigned num_monomials, rational const * coeffs, expr * const * monomials, v_dependency * ex) {
 #define MK_EQ(COEFF)                                    \
-    ptr_vector<monomial> ms;                            \
+    vector<monomial*> ms;                            \
     for (unsigned i = 0; i < num_monomials; i++)        \
         ms.push_back(mk_monomial(COEFF, monomials[i])); \
     std::stable_sort(ms.begin(), ms.end(), m_monomial_lt);     \
@@ -406,9 +406,9 @@ void grobner::assert_monomial_tautology(expr * m) {
 bool grobner::is_eq_monomial_body(monomial const * m1, monomial const * m2) {
     if (m1->get_degree() != m2->get_degree())
         return false;
-    ptr_vector<expr>::const_iterator it1  = m1->m_vars.begin();
-    ptr_vector<expr>::const_iterator it2  = m2->m_vars.begin();
-    ptr_vector<expr>::const_iterator end1 = m1->m_vars.end();
+    vector<expr*>::const_iterator it1  = m1->m_vars.begin();
+    vector<expr*>::const_iterator it2  = m2->m_vars.begin();
+    vector<expr*>::const_iterator end1 = m1->m_vars.end();
     for (; it1 != end1; ++it1, ++it2) {
         expr * v1 = *it1;
         expr * v2 = *it2;
@@ -423,14 +423,14 @@ bool grobner::is_eq_monomial_body(monomial const * m1, monomial const * m2) {
    
    \remark This method assumes the monomials are sorted.
 */
-void grobner::merge_monomials(ptr_vector<monomial> & monomials) {
+void grobner::merge_monomials(vector<monomial*> & monomials) {
     TRACE("grobner", tout << "before merging monomials:\n"; display_monomials(tout, monomials.size(), monomials.c_ptr()); tout << "\n";);
     unsigned j  = 0;
     unsigned sz = monomials.size();
     if (sz == 0)
         return;
     SASSERT(&m_del_monomials != &monomials);
-    ptr_vector<monomial>& to_delete = m_del_monomials;
+    vector<monomial*>& to_delete = m_del_monomials;
     to_delete.clear();
     m_manager.limit().inc(sz);
     for (unsigned i = 1; i < sz; ++i) {
@@ -462,7 +462,7 @@ void grobner::merge_monomials(ptr_vector<monomial> & monomials) {
 /**
    \brief Divide the coefficients by the coefficient of the leading term.
 */
-void grobner::normalize_coeff(ptr_vector<monomial> & monomials) {
+void grobner::normalize_coeff(vector<monomial*> & monomials) {
     if (monomials.empty())
         return;
     rational c  = monomials[0]->m_coeff;
@@ -476,7 +476,7 @@ void grobner::normalize_coeff(ptr_vector<monomial> & monomials) {
 /**
    \brief Simplify the given monomials
 */
-void grobner::simplify(ptr_vector<monomial> & monomials) {
+void grobner::simplify(vector<monomial*> & monomials) {
     std::stable_sort(monomials.begin(), monomials.end(), m_monomial_lt);
     merge_monomials(monomials);
     normalize_coeff(monomials);
@@ -514,7 +514,7 @@ void grobner::simplify(equation * eq) {
    
    \remark This method assumes the variables of m1 and m2 are sorted.
 */
-bool grobner::is_subset(monomial const * m1, monomial const * m2, ptr_vector<expr> & rest) const {
+bool grobner::is_subset(monomial const * m1, monomial const * m2, vector<expr*> & rest) const {
     unsigned i1  = 0;
     unsigned i2  = 0;
     unsigned sz1 = m1->m_vars.size();
@@ -558,7 +558,7 @@ bool grobner::is_subset(monomial const * m1, monomial const * m2, ptr_vector<exp
    \brief Multiply the monomials of source starting at position start_idx by (coeff * vars), and store the resultant monomials
    at result.
 */
-void grobner::mul_append(unsigned start_idx, equation const * source, rational const & coeff, ptr_vector<expr> const & vars, ptr_vector<monomial> & result) {
+void grobner::mul_append(unsigned start_idx, equation const * source, rational const & coeff, vector<expr*> const & vars, vector<monomial*> & result) {
     unsigned sz = source->get_num_monomials();
     for (unsigned i = start_idx; i < sz; i++) {
         monomial const * m = source->get_monomial(i);
@@ -617,9 +617,9 @@ grobner::equation * grobner::simplify(equation const * source, equation * target
         unsigned j          = 0;
         unsigned sz         = target->m_monomials.size();
         monomial const * LT = source->get_monomial(0); 
-        ptr_vector<monomial> & new_monomials = m_tmp_monomials;
+        vector<monomial*> & new_monomials = m_tmp_monomials;
         new_monomials.clear();
-        ptr_vector<expr>  & rest = m_tmp_vars1;
+        vector<expr*>  & rest = m_tmp_vars1;
         for (; i < sz; i++) {
             monomial * curr = target->m_monomials[i];
             rest.clear();
@@ -802,7 +802,7 @@ void grobner::simplify_to_process(equation * eq) {
 /**
    \brief If m1 = (* c M M1) and m2 = (* d M M2) and M is non empty, then return true and store M1 in rest1 and M2 in rest2.
 */
-bool grobner::unify(monomial const * m1, monomial const * m2, ptr_vector<expr> & rest1, ptr_vector<expr> & rest2) {
+bool grobner::unify(monomial const * m1, monomial const * m2, vector<expr*> & rest1, vector<expr*> & rest2) {
     TRACE("grobner", tout << "unifying: "; display_monomial(tout, *m1); tout << " "; display_monomial(tout, *m2); tout << "\n";);
     bool found_M = false;
     unsigned i1  = 0;
@@ -851,15 +851,15 @@ void grobner::superpose(equation * eq1, equation * eq2) {
     if (eq1->m_monomials.empty() || eq2->m_monomials.empty())
         return;
     m_stats.m_superpose++;
-    ptr_vector<expr> & rest1 = m_tmp_vars1;
+    vector<expr*> & rest1 = m_tmp_vars1;
     rest1.clear();
-    ptr_vector<expr> & rest2 = m_tmp_vars2;
+    vector<expr*> & rest2 = m_tmp_vars2;
     rest2.clear();
     if (unify(eq1->m_monomials[0], eq2->m_monomials[0], rest1, rest2)) {
         TRACE("grobner", tout << "superposing:\n"; display_equation(tout, *eq1); display_equation(tout, *eq2); 
               tout << "rest1: "; display_vars(tout, rest1.size(), rest1.c_ptr()); tout << "\n";
               tout << "rest2: "; display_vars(tout, rest2.size(), rest2.c_ptr()); tout << "\n";);
-        ptr_vector<monomial> & new_monomials = m_tmp_monomials;
+        vector<monomial*> & new_monomials = m_tmp_monomials;
         new_monomials.clear();
         mul_append(1, eq1, eq2->m_monomials[0]->m_coeff, rest2, new_monomials);
         rational c = eq1->m_monomials[0]->m_coeff;
@@ -925,7 +925,7 @@ bool grobner::compute_basis(unsigned threshold) {
     return false;
 }
 
-void grobner::copy_to(equation_set const & s, ptr_vector<equation> & result) const {
+void grobner::copy_to(equation_set const & s, vector<equation*> & result) const {
     for (equation * e : s) 
         result.push_back(e);
 }
@@ -935,7 +935,7 @@ void grobner::copy_to(equation_set const & s, ptr_vector<equation> & result) con
    
    \warning This equations can be deleted when compute_basis is invoked.
 */
-void grobner::get_equations(ptr_vector<equation> & result) const {
+void grobner::get_equations(vector<equation*> & result) const {
     copy_to(m_processed, result);
     copy_to(m_to_process, result);
 }

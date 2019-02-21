@@ -230,7 +230,7 @@ namespace smt {
         }
         expr_ref lemma(m);
         if (m.is_or(s_instance)) {
-            ptr_vector<expr> args;
+            vector<expr*> args;
             args.push_back(m.mk_not(q));
             args.append(to_app(s_instance)->get_num_args(), to_app(s_instance)->get_args());
             lemma = m.mk_or(args.size(), args.c_ptr());
@@ -403,7 +403,7 @@ namespace smt {
 
     void qi_queue::display_delayed_instances_stats(std::ostream & out) const {
         obj_map<quantifier, delayed_qa_info> qa2info;
-        ptr_vector<quantifier> qas;
+        vector<quantifier*> qas;
         for (entry const & e : m_delayed_entries) {
             if (e.m_instantiated)
                 continue;
