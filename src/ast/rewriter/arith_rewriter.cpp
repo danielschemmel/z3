@@ -330,7 +330,7 @@ expr * arith_rewriter::reduce_power(expr * arg, bool is_eq) {
         sz = 1;
         args = &arg;
     }
-    ptr_buffer<expr> new_args;
+    buffer<expr*> new_args;
     rational k;
     for (unsigned i = 0; i < sz; i++) {
         expr * arg = args[i];
@@ -879,7 +879,7 @@ bool arith_rewriter::divides(expr* num, expr* den, expr_ref& result) {
     expr_fast_mark1 mark; 
     rational num_r(1), den_r(1); 
     expr* num_e = nullptr, *den_e = nullptr; 
-    ptr_buffer<expr> args1, args2; 
+    buffer<expr*> args1, args2; 
     flat_mul(num, args1); 
     flat_mul(den, args2); 
     for (expr * arg : args1) { 
@@ -919,7 +919,7 @@ bool arith_rewriter::divides(expr* num, expr* den, expr_ref& result) {
 } 
 
 expr_ref arith_rewriter::remove_divisor(expr* arg, expr* num, expr* den) { 
-    ptr_buffer<expr> args1, args2; 
+    buffer<expr*> args1, args2; 
     flat_mul(num, args1); 
     flat_mul(den, args2); 
     remove_divisor(arg, args1); 
@@ -937,7 +937,7 @@ expr_ref arith_rewriter::remove_divisor(expr* arg, expr* num, expr* den) {
                     m());
 } 
  
-void arith_rewriter::flat_mul(expr* e, ptr_buffer<expr>& args) { 
+void arith_rewriter::flat_mul(expr* e, buffer<expr*>& args) { 
     args.push_back(e); 
     for (unsigned i = 0; i < args.size(); ++i) { 
         e = args[i]; 
@@ -950,7 +950,7 @@ void arith_rewriter::flat_mul(expr* e, ptr_buffer<expr>& args) {
     } 
 } 
  
-void arith_rewriter::remove_divisor(expr* d, ptr_buffer<expr>& args) { 
+void arith_rewriter::remove_divisor(expr* d, buffer<expr*>& args) { 
     for (unsigned i = 0; i < args.size(); ++i) { 
         if (args[i] == d) { 
             args[i] = args.back(); 
@@ -1129,7 +1129,7 @@ br_status arith_rewriter::mk_power_core(expr * arg1, expr * arg2, expr_ref & res
 
     if ((m_expand_power || (m_som && is_app(arg1) && to_app(arg1)->get_family_id() == get_fid())) &&
         is_num_y && y.is_unsigned() && 1 < y.get_unsigned() && y.get_unsigned() <= m_max_degree) {
-        ptr_buffer<expr> args;
+        buffer<expr*> args;
         unsigned k = y.get_unsigned();
         for (unsigned i = 0; i < k; i++) {
             args.push_back(arg1);
@@ -1266,7 +1266,7 @@ br_status arith_rewriter::mk_to_real_core(expr * arg, expr_ref & result) {
     // push to_real over OP_ADD, OP_MUL
     if (m_push_to_real) {
         if (m_util.is_add(arg) || m_util.is_mul(arg)) {
-            ptr_buffer<expr> new_args;
+            buffer<expr*> new_args;
             unsigned num = to_app(arg)->get_num_args();
             for (unsigned i = 0; i < num; i++) {
                 new_args.push_back(m_util.mk_to_real(to_app(arg)->get_arg(i)));

@@ -86,7 +86,7 @@ void bool_rewriter::mk_and_as_or(unsigned num_args, expr * const * args, expr_re
 
 br_status bool_rewriter::mk_nflat_and_core(unsigned num_args, expr * const * args, expr_ref & result) {
     bool s = false;
-    ptr_buffer<expr> buffer;
+    buffer<expr*> buffer;
     expr_fast_mark1 neg_lits;
     expr_fast_mark2 pos_lits;
 
@@ -152,7 +152,7 @@ br_status bool_rewriter::mk_flat_and_core(unsigned num_args, expr * const * args
     }
     if (i < num_args) {
         // has nested ANDs
-        ptr_buffer<expr> flat_args;
+        buffer<expr*> flat_args;
         flat_args.append(i, args);
         for (; i < num_args; i++) {
             expr * arg = args[i];
@@ -175,7 +175,7 @@ br_status bool_rewriter::mk_flat_and_core(unsigned num_args, expr * const * args
 
 br_status bool_rewriter::mk_nflat_or_core(unsigned num_args, expr * const * args, expr_ref & result) {
     bool s = false;
-    ptr_buffer<expr> buffer;
+    buffer<expr*> buffer;
     expr_fast_mark1 neg_lits;
     expr_fast_mark2 pos_lits;
     expr* prev = nullptr;
@@ -254,7 +254,7 @@ br_status bool_rewriter::mk_flat_or_core(unsigned num_args, expr * const * args,
     expr* prev = nullptr;
     if (i < num_args) {
         // has nested ORs
-        ptr_buffer<expr> flat_args;
+        buffer<expr*> flat_args;
         flat_args.append(i, args);
         for (; i < num_args; i++) {
             expr * arg = args[i];
@@ -299,7 +299,7 @@ expr * bool_rewriter::mk_or_app(unsigned num_args, expr * const * args) {
 */
 bool bool_rewriter::simp_nested_not_or(unsigned num_args, expr * const * args,
                                        expr_fast_mark1 & neg_lits, expr_fast_mark2 & pos_lits, expr_ref & result) {
-    ptr_buffer<expr> new_args;
+    buffer<expr*> new_args;
     bool simp = false;
     m_local_ctx_cost += num_args;
     for (unsigned i = 0; i < num_args; i++) {
@@ -764,7 +764,7 @@ br_status bool_rewriter::mk_distinct_core(unsigned num_args, expr * const * args
     }
 
     if (m_blast_distinct && num_args < m_blast_distinct_threshold) {
-        ptr_buffer<expr> new_diseqs;
+        buffer<expr*> new_diseqs;
         for (unsigned i = 0; i < num_args; i++) {
             for (unsigned j = i + 1; j < num_args; j++)
                 new_diseqs.push_back(m().mk_not(mk_eq(args[i], args[j])));

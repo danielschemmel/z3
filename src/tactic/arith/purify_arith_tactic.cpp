@@ -480,7 +480,7 @@ struct purify_arith_proc {
             am.get_upper(a, upper);
             unsigned sz = p.size();
             SASSERT(sz > 2);
-            ptr_buffer<expr> args;
+            buffer<expr*> args;
             for (unsigned i = 0; i < sz; i++) {
                 if (am.qm().is_zero(p[i]))
                     continue;
@@ -726,7 +726,7 @@ struct purify_arith_proc {
             var_shifter shifter(m());
             shifter(new_body, num_vars, new_body);
             // Rename fresh constants in r.cfg().m_new_vars to variables
-            ptr_buffer<sort> sorts;
+            buffer<sort*> sorts;
             buffer<symbol>   names;
             expr_substitution subst(m(), false, false);
             for (unsigned i = 0; i < num_vars; i++) {

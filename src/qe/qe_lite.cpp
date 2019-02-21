@@ -41,7 +41,7 @@ namespace eq {
 
     bool occurs_var(unsigned idx, expr* e) {
         if (is_ground(e)) return false;
-        ptr_buffer<expr> todo;
+        buffer<expr*> todo;
         todo.push_back(e);
         ast_mark mark;
         while (!todo.empty()) {
@@ -88,7 +88,7 @@ namespace eq {
             bool has_ground = false;            
             if (bv.is_concat(t)) {
                 unsigned lo, hi;
-                ptr_buffer<expr> args;
+                buffer<expr*> args;
                 args.append(to_app(t)->get_num_args(), to_app(t)->get_args());
                 for (unsigned i = 0; i < args.size(); ++i) {
                     expr* arg = args[i];
@@ -1514,7 +1514,7 @@ namespace fm {
             }
             else {
                 bool int_cnstr = all_int(c);
-                ptr_buffer<expr> ms;
+                buffer<expr*> ms;
                 for (unsigned i = 0; i < c.m_num_vars; i++) {
                     expr * x = m_var2expr.get(c.m_xs[i]);
                     if (!int_cnstr && is_int(c.m_xs[i]))
@@ -1545,7 +1545,7 @@ namespace fm {
                     return m.mk_false();
             }
 
-            ptr_buffer<expr> lits;
+            buffer<expr*> lits;
             for (unsigned i = 0; i < c.m_num_lits; i++) {
                 literal l = c.m_lits[i];
                 if (sign(l))

@@ -156,7 +156,7 @@ class elim_uncnstr_tactic : public tactic {
                 // r = (store t i1 ... in d)
                 // where i1 ... in are arbitrary values
                 // and d is a term different from (select t i1 ... in)
-                ptr_buffer<expr> new_args;
+                buffer<expr*> new_args;
                 new_args.push_back(t);
                 for (unsigned i = 0; i < arity; i++)
                     new_args.push_back(m().get_some_value(get_array_domain(s, i)));
@@ -188,7 +188,7 @@ class elim_uncnstr_tactic : public tactic {
                     if (target == UINT_MAX)
                         continue;
                     // use the constructor the distinct term constructor(...,t,...)
-                    ptr_buffer<expr> new_args;
+                    buffer<expr*> new_args;
                     for (unsigned i = 0; i < num; i++) {
                         if (i == target) {
                             new_args.push_back(t);
@@ -382,7 +382,7 @@ class elim_uncnstr_tactic : public tactic {
                 return u;
             if (!m_mc) 
                 return u;
-            ptr_buffer<expr> new_args;
+            buffer<expr*> new_args;
             for (unsigned j = 0; j < num; j++) {
                 if (j == i)
                     continue;
@@ -497,7 +497,7 @@ class elim_uncnstr_tactic : public tactic {
                 add_def(arg, r);
             }
             else {
-                ptr_buffer<expr> args;
+                buffer<expr*> args;
                 if (high < bv_size - 1)
                     args.push_back(m_bv_util.mk_numeral(rational(0), bv_size - high - 1));
                 args.push_back(r);
@@ -702,7 +702,7 @@ class elim_uncnstr_tactic : public tactic {
                     if (!mk_fresh_uncnstr_var_for(f, num, args, u))
                         return u;
                     ptr_vector<func_decl> const & accs = *m_dt_util.get_constructor_accessors(c);
-                    ptr_buffer<expr> new_args;
+                    buffer<expr*> new_args;
                     for (unsigned i = 0; i < accs.size(); i++) {
                         if (accs[i] == f) 
                             new_args.push_back(u);

@@ -375,7 +375,7 @@ br_status bv_rewriter::rw_leq_concats(bool is_signed, expr * _a, expr * _b, expr
             expr_ref new_a(m());
             expr_ref new_b(m());
             if (af_sz > sz_min) {
-                ptr_buffer<expr> new_args;
+                buffer<expr*> new_args;
                 new_args.push_back(mk_numeral(af, af_sz - sz_min));
                 for (unsigned i = 1; i < numa; ++i) new_args.push_back(a->get_arg(i));
                 new_a = concat(new_args.size(), new_args.c_ptr());
@@ -383,7 +383,7 @@ br_status bv_rewriter::rw_leq_concats(bool is_signed, expr * _a, expr * _b, expr
                 new_a = concat(numa - 1, a->get_args() + 1);
             }
             if (bf_sz > sz_min) {
-                ptr_buffer<expr> new_args;
+                buffer<expr*> new_args;
                 new_args.push_back(mk_numeral(bf, bf_sz - sz_min));
                 for (unsigned i = 1; i < numb; ++i) new_args.push_back(b->get_arg(i));
                 new_b = concat(new_args.size(), new_args.c_ptr());
@@ -628,8 +628,8 @@ unsigned bv_rewriter::propagate_extract(unsigned high, expr * arg, expr_ref & re
     }
     // perform removal
     SASSERT(removable <= to_remove);
-    ptr_buffer<expr> new_args;
-    ptr_buffer<expr> new_concat_args;
+    buffer<expr*> new_args;
+    buffer<expr*> new_concat_args;
     for (unsigned i = 0; i < num; i++) {
         expr * const curr = a->get_arg(i);
         const bool curr_is_conc = m_util.is_concat(curr);
@@ -726,7 +726,7 @@ br_status bv_rewriter::mk_extract(unsigned high, unsigned low, expr * arg, expr_
             }
             else {
                 // look for remaining arguments
-                ptr_buffer<expr> new_args;
+                buffer<expr*> new_args;
                 bool used_extract = false;
                 if (high - idx == curr_sz - 1) {
                     new_args.push_back(curr);
@@ -763,7 +763,7 @@ br_status bv_rewriter::mk_extract(unsigned high, unsigned low, expr * arg, expr_
         m_util.is_bv_xor(arg) ||
         (low == 0 && (m_util.is_bv_add(arg) ||
                       m_util.is_bv_mul(arg)))) {
-        ptr_buffer<expr> new_args;
+        buffer<expr*> new_args;
         unsigned num = to_app(arg)->get_num_args();
         for (unsigned i = 0; i < num; i++) {
             expr * curr = to_app(arg)->get_arg(i);
@@ -975,7 +975,7 @@ br_status bv_rewriter::mk_bv_ashr(expr * arg1, expr * arg2, expr_ref & result) {
 #if 0
     // (bvashr x k) --> (concat extract[sz-1:sz-1](x) ... extract[sz-1:sz-1](x) extract[sz-1:k](x))
     if (is_num2) {
-        ptr_buffer<expr> new_args;
+        buffer<expr*> new_args;
         if (r2 > numeral(bv_size))
             r2 = numeral(bv_size);
         SASSERT(r2 <= numeral(bv_size));
@@ -1550,7 +1550,7 @@ br_status bv_rewriter::mk_sign_extend(unsigned n, expr * arg, expr_ref & result)
     if (m_elim_sign_ext) {
         unsigned sz = get_bv_size(arg);
         expr * sign = m_mk_extract(sz-1, sz-1, arg);
-        ptr_buffer<expr> args;
+        buffer<expr*> args;
         for (unsigned i = 0; i < n; i++)
             args.push_back(sign);
         args.push_back(arg);
@@ -1566,7 +1566,7 @@ br_status bv_rewriter::mk_repeat(unsigned n, expr * arg, expr_ref & result) {
         result = arg;
         return BR_DONE;
     }
-    ptr_buffer<expr> args;
+    buffer<expr*> args;
     for (unsigned i = 0; i < n; i++)
         args.push_back(arg);
     result = m_util.mk_concat(args.size(), args.c_ptr());
@@ -1581,7 +1581,7 @@ br_status bv_rewriter::mk_bv_or(unsigned num, expr * const * args, expr_ref & re
     }
     unsigned sz    = get_bv_size(args[0]);
     bool flattened = false;
-    ptr_buffer<expr> flat_args;
+    buffer<expr*> flat_args;
     if (m_flat) {
         for (unsigned i = 0; i < num; i++) {
             expr * arg = args[i];
@@ -1601,7 +1601,7 @@ br_status bv_rewriter::mk_bv_or(unsigned num, expr * const * args, expr_ref & re
         }
     }
 
-    ptr_buffer<expr> new_args;
+    buffer<expr*> new_args;
     expr_fast_mark1  pos_args;
     expr_fast_mark2  neg_args;
     bool merged = false;
@@ -1661,7 +1661,7 @@ br_status bv_rewriter::mk_bv_or(unsigned num, expr * const * args, expr_ref & re
                 break;
         if (i == sz) {
             // is target
-            ptr_buffer<expr> non_zero_args;
+            buffer<expr*> non_zero_args;
             int j = sz;
             j--;
             while (j >= 0) {
@@ -1689,7 +1689,7 @@ br_status bv_rewriter::mk_bv_or(unsigned num, expr * const * args, expr_ref & re
         // OR is a mask
         expr * t = new_args[0];
         numeral two(2);
-        ptr_buffer<expr> exs;
+        buffer<expr*> exs;
         unsigned low = 0;
         unsigned i = 0;
         while (i < sz) {
@@ -1750,7 +1750,7 @@ br_status bv_rewriter::mk_bv_xor(unsigned num, expr * const * args, expr_ref & r
     }
     unsigned sz    = get_bv_size(args[0]);
     bool flattened = false;
-    ptr_buffer<expr> flat_args;
+    buffer<expr*> flat_args;
     if (m_flat) {
         for (unsigned i = 0; i < num; i++) {
             expr * arg = args[i];
@@ -1866,7 +1866,7 @@ br_status bv_rewriter::mk_bv_xor(unsigned num, expr * const * args, expr_ref & r
         (!m_bv_sort_ac || is_sorted(num, args)))
         return BR_FAILED;
 
-    ptr_buffer<expr> new_args;
+    buffer<expr*> new_args;
     expr_ref c(m()); // may not be used
     if (!v1.is_zero()) {
         c = mk_numeral(v1, sz);
@@ -1927,7 +1927,7 @@ br_status bv_rewriter::mk_bv_not(expr * arg, expr_ref & result) {
 
 #if 1
     if (m_util.is_concat(arg)) {
-        ptr_buffer<expr> new_args;
+        buffer<expr*> new_args;
         unsigned num = to_app(arg)->get_num_args();
         for (unsigned i = 0; i < num; i++) {
             new_args.push_back(m_util.mk_bv_not(to_app(arg)->get_arg(i)));
@@ -1978,7 +1978,7 @@ br_status bv_rewriter::mk_bv_not(expr * arg, expr_ref & result) {
 }
 
 br_status bv_rewriter::mk_bv_and(unsigned num, expr * const * args, expr_ref & result) {
-    ptr_buffer<expr> new_args;
+    buffer<expr*> new_args;
     for (unsigned i = 0; i < num; i++) {
         new_args.push_back(m_util.mk_bv_not(args[i]));
     }
@@ -1988,7 +1988,7 @@ br_status bv_rewriter::mk_bv_and(unsigned num, expr * const * args, expr_ref & r
 }
 
 br_status bv_rewriter::mk_bv_nand(unsigned num, expr * const * args, expr_ref & result) {
-    ptr_buffer<expr> new_args;
+    buffer<expr*> new_args;
     for (unsigned i = 0; i < num; i++) {
         new_args.push_back(m_util.mk_bv_not(args[i]));
     }
@@ -2261,7 +2261,7 @@ br_status bv_rewriter::mk_bit2bool(expr * lhs, expr * rhs, expr_ref & result) {
     bit1 = is_one ? rhs : mk_numeral(numeral(1), 1);
 
     if (m_util.is_bv_or(lhs)) {
-        ptr_buffer<expr> new_args;
+        buffer<expr*> new_args;
         unsigned num = to_app(lhs)->get_num_args();
         for (unsigned i = 0; i < num; i++) {
             new_args.push_back(m().mk_eq(to_app(lhs)->get_arg(i), bit1));
@@ -2278,7 +2278,7 @@ br_status bv_rewriter::mk_bit2bool(expr * lhs, expr * rhs, expr_ref & result) {
 
 
     if (m_util.is_bv_xor(lhs)) {
-        ptr_buffer<expr> new_args;
+        buffer<expr*> new_args;
         unsigned num = to_app(lhs)->get_num_args();
         for (unsigned i = 0; i < num; i++) {
             new_args.push_back(m().mk_eq(to_app(lhs)->get_arg(i), bit1));
@@ -2314,7 +2314,7 @@ br_status bv_rewriter::mk_blast_eq_value(expr * lhs, expr * rhs, expr_ref & resu
         return BR_FAILED;
 
     numeral two(2);
-    ptr_buffer<expr> new_args;
+    buffer<expr*> new_args;
     for (unsigned i = 0; i < sz; i++) {
         bool bit0 = (v % two).is_zero();
         new_args.push_back(m().mk_eq(m_mk_extract(i,i, lhs),
@@ -2348,7 +2348,7 @@ br_status bv_rewriter::mk_eq_concat(expr * lhs, expr * rhs, expr_ref & result) {
         args2 = &rhs;
     }
 
-    ptr_buffer<expr> new_eqs;
+    buffer<expr*> new_eqs;
     unsigned low1 = 0;
     unsigned low2 = 0;
     unsigned i1 = num1;

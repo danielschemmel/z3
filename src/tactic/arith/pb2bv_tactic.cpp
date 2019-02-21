@@ -366,7 +366,7 @@ private:
             }
 
             if (is_card && m_c.is_one()) {
-                ptr_buffer<expr> args;
+                buffer<expr*> args;
                 for (unsigned i = 0; i < m_p.size(); i++) {
                     args.push_back(mon_lit2lit(m_p[i]));
                 }             
@@ -375,7 +375,7 @@ private:
             }
         
             if (is_card && m_c == numeral(m_p.size())) {
-                ptr_buffer<expr> args;
+                buffer<expr*> args;
                 for (unsigned i = 0; i < m_p.size(); i++) {
                     args.push_back(mon_lit2lit(m_p[i]));
                 }
@@ -446,7 +446,7 @@ private:
             // [Christoph]: I agree and never saw it violated so far!
             SASSERT(m_c.get_num_bits() <= bits);
 
-            ptr_buffer<expr> lhs_args;
+            buffer<expr*> lhs_args;
         
             for (unsigned i = 0; i < m_p.size(); i++) {
                 monomial const & mo = m_p[i];
